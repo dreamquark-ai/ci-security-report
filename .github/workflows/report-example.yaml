@@ -1,0 +1,28 @@
+name: Example of workflow for security report
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Pull the base image
+      run: docker pull python:3.10-rc-slim
+
+    - name: Build the new image
+      run: docker build -t python:security-test -f example/Dockerfile .
+
+    - name: "Security reports"
+      uses: dreamquark-ai/github-action-security-report@main
+      env:
+        GITHUB_PAT: ${{secrets.SECURITY_REPORT_ACTION_EXAMPLE_PAT}}
+      with:
+        image: 'python'
+        base-tag: $BASE_TAG
+        new-tag: 'security-test'
+        repo: 'github-action-security-report'
+        pr-nb: ${{ github.event.number }}
+        topic: 'example'

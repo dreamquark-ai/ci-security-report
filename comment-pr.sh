@@ -10,6 +10,7 @@ function comment_exists() {
     topic=$3
     resp=$(curl -s -H "Authorization: token $GITHUB_PAT" \
     https://api.github.com/repos/dreamquark-ai/$repo/issues/$pr/comments)
+    echo $resp
     echo $resp | jq  '.[] | select(.body | test(".*- (.*?)'"$topic"'\\s+")) | .id'
 }
 
@@ -53,7 +54,7 @@ function comment_pr() {
     fi
 
     # Add new comment
-    echo "{\"body\":  \"$(cat /tmp/reports/security.md |  sed "s/\"/'/g" | sed 's/$/\\n/')\"}" > body
+    echo "{\"body\":  \"$(cat ../reports/security.md |  sed "s/\"/'/g" | sed 's/$/\\n/')\"}" > body
     add_comment $repo $pr $body
     cleanup_folder
 }

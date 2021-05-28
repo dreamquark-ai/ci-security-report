@@ -10,7 +10,7 @@ FOLDER=$(readlink -f "${BASH_SOURCE[0]}" | xargs dirname)
 base_report="$FOLDER/reports/report-base.json"
 new_report="$FOLDER/reports/report-new.json"
 target="$FOLDER/reports/security.md"
-report_folder="/tmp/reports"
+report_folder="$FOLDER/reports"
 
 
 POSITIONAL=()
