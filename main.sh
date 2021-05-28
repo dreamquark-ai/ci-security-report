@@ -10,7 +10,7 @@ FOLDER=$(readlink -f "${BASH_SOURCE[0]}" | xargs dirname)
 base_report="$FOLDER/reports/report-base.json"
 new_report="$FOLDER/reports/report-new.json"
 target="$FOLDER/reports/security.md"
-report_folder="/tmp/reports"
+report_folder="$FOLDER/reports"
 
 
 POSITIONAL=()
@@ -49,6 +49,11 @@ case $key in
     shift 
     shift 
     ;;
+    -o|--orga)
+    orga="$2"
+    shift 
+    shift 
+    ;;
     *)    
     POSITIONAL+=("$1")
     shift 
@@ -62,4 +67,4 @@ get_differences $base_report $new_report $report_folder
 echo "Generate the report for $image:$base_tag->$new_tag."
 generate_markdown $report_folder $report_folder $image $base_tag $new_tag $topic
 echo "Publish the report as a comment of the PR #$pr to $repo related to $topic"
-comment_pr $repo $pr $topic
+comment_pr $repo $pr $topic $orga

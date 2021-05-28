@@ -12,7 +12,7 @@ function get_differences() {
 
     mkdir -p $target_folder
     temp_folder
-    
+
     cat $base_report | jq -r '.[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-base
     cat $new_report | jq -r '.[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-new
 
@@ -25,14 +25,14 @@ function get_differences() {
     echo "Get proper json with all the vulnerabilities"
     # Get the new vulnerabilities
     echo "[" > new.json
-    cat tmp-added | sed -s -e 's/^\([^,]*\),\([^,]*\),\(.*\)$/ cat '$(echo $new_report | sed -s "s|/|\\\/|g" )' |  jq \x27 .[].Vulnerabilities[]? |  select(.VulnerabilityID =="\1" and .PkgName =="\2" and .InstalledVersion=="\3") \x27/' -e 's/$/ \&\& printf \",\"/' | sh | head -c-1  >> new.json
+    cat tmp-added | sed -s -e 's/^\([^,]*\),\([^,]*\),\(.*\)$/ cat '$(echo $new_report | sed -s "s|/|\\\/|g" )' |  jq \x27 .[].Vulnerabilities[]? |  select(.VulnerabilityID =="\1" and .PkgName =="\2" and .InstalledVersion=="\3") \x27/' | sh | head -c-1 | sed -z 's/}\n{/},\n{/g'  >> new.json
     echo "]" >> new.json
     # Get the removed vulnerabilities
     echo "[" > old.json
-    cat tmp-rm |  sed -s -e 's/^\([^,]*\),\([^,]*\),\(.*\)$/ cat '$(echo $base_report | sed -s "s|/|\\\/|g" )' |  jq \x27 .[].Vulnerabilities[]? |  select(.VulnerabilityID =="\1" and .PkgName =="\2" and .InstalledVersion=="\3") \x27/' -e 's/$/ \&\& printf \",\"/' | sh | head -c-1  >> old.json
+    cat tmp-rm |  sed -s -e 's/^\([^,]*\),\([^,]*\),\(.*\)$/ cat '$(echo $base_report | sed -s "s|/|\\\/|g" )' |  jq \x27 .[].Vulnerabilities[]? |  select(.VulnerabilityID =="\1" and .PkgName =="\2" and .InstalledVersion=="\3") \x27/' | sh | head -c-1 | sed -z 's/}\n{/},\n{/g' >> old.json
     echo "]" >> old.json
 
-    mv new.json $target_folder
+    mv new.json $target_folder    
     mv old.json $target_folder
 
     cleanup_folder
