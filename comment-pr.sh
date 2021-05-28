@@ -1,6 +1,6 @@
 #!/bin/bash
 FOLDER=$(readlink -f "${BASH_SOURCE[0]}" | xargs dirname)
-. "${FOLDER}/../utils/utils.sh"
+. "${FOLDER}/utils.sh"
 
 
 #https://docs.github.com/en/rest/reference/issues#list-issue-comments
@@ -53,7 +53,7 @@ function comment_pr() {
     fi
 
     # Add new comment
-    echo "{\"body\":  \"$(cat ../reports/security.md |  sed "s/\"/'/g" | sed 's/$/\\n/')\"}" > body
+    echo "{\"body\":  \"$(cat /tmp/reports/security.md |  sed "s/\"/'/g" | sed 's/$/\\n/')\"}" > body
     add_comment $repo $pr $body
     cleanup_folder
 }

@@ -9,9 +9,8 @@ FOLDER=$(readlink -f "${BASH_SOURCE[0]}" | xargs dirname)
 
 base_report="$FOLDER/reports/report-base.json"
 new_report="$FOLDER/reports/report-new.json"
-target_folder="$FOLDER/reports"
 target="$FOLDER/reports/security.md"
-report_folder="${FOLDER}/reports"
+report_folder="/tmp/reports"
 
 
 POSITIONAL=()
@@ -57,9 +56,10 @@ case $key in
 esac
 done
 
+
 echo "Compare the differences between $base_report and $new_report."
-get_differences $base_report $new_report $target_folder 
+get_differences $base_report $new_report $report_folder
 echo "Generate the report for $image:$base_tag->$new_tag."
-generate_markdown $report_folder $target $image $base_tag $new_tag $topic
+generate_markdown $report_folder $report_folder $image $base_tag $new_tag $topic
 echo "Publish the report as a comment of the PR #$pr to $repo related to $topic"
 comment_pr $repo $pr $topic

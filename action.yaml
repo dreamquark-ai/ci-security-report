@@ -27,7 +27,7 @@ runs:
     - name: "Install trivy and set up folders"
       shell: bash
       run: |
-        mkdir -p reports
+        mkdir -p /tmp/reports
         sudo apt-get install wget apt-transport-https gnupg lsb-release
         wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
         echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
@@ -36,13 +36,14 @@ runs:
 
     - name: "Security report on base image"
       shell: bash
-      working-directory: reports
+      working-directory: /tmp/reports
       run: trivy -q -f json -o report-base.json ${{inputs.image}}:${{inputs.base-tag}}
 
     - name: "Security report on the new image"
       shell: bash
-      working-directory: reports
+      working-directory: /tmp/reports
       run: trivy -q -f json -o report-new.json ${{inputs.image}}:${{inputs.new-tag}} 
+    
     - name: "Compare the reports"
       shell: bash
-      run: ./main.sh --image ${{inputs.image}} --base-tag ${{inputs.base-tag}} --new-tag ${{inputs.new-tag}} --pull-request ${{inputs.pr-nb}} --topic ${{inputs.topic}} --repo ${{inputs.repo}}
+      run: ${{ github.action_path }}/main.sh --image ${{inputs.image}} --base-tag ${{inputs.base-tag}} --new-tag ${{inputs.new-tag}} --pull-request ${{inputs.pr-nb}} --topic ${{inputs.topic}} --repo ${{inputs.repo}}

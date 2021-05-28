@@ -2,7 +2,7 @@
 
 set -e
 FOLDER=$(readlink -f "${BASH_SOURCE[0]}" | xargs dirname)
-. "${FOLDER}/../utils/utils.sh"
+. "${FOLDER}/utils.sh"
 
 
 function get_differences() {
