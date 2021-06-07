@@ -1,4 +1,6 @@
-description: Create and publish security report as a PR comment
+description: |
+  Create a markdown security report with new and removed vulnerabilities and add it as a comment pull request
+
 parameters:
     image:
         description: Image name on which one wants to perform security test
@@ -28,17 +30,14 @@ parameters:
         type: string
         default: image
 
+executor: default
+resource_class: large
+
 steps:
-    - run:
-        name: "Run Trivy security report on the base image"
-        command: |
-            trivy -q -f json -o reports/report-base.json << parameters.image >>:<< parameters.base-tag >>
-    - run:
-        name: "Run Trivy security report on the new image"
-        command: | 
-            trivy -q -f json -o reports/report-new.json << parameters.image >>:<< parameters.new-tag >>
-    - run:
-        name: "Compare the report and publish the differential comment as a PR comment"
-        command: |
-            ./main.sh --image << parameters.image >> --base-tag << parameters.base-tag >> --new-tag << parameters.new-tag >>
-            --pull-request << parameters.pr-nb >> --topic << parameters.topic >> --repo << parameters.repo >> --orga << parameters.orga >>
+  - security-report:
+      image: << parameters.image >>
+      base-tag: << parameters.base-tag >>
+      new-tag: << parameters.new-tag >>
+      orga: << parameters.orga >>
+      repo: << parameters.repo >>
+      topic: << parameters.topic >>

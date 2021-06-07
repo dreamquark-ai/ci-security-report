@@ -26,4 +26,4 @@ jobs:
         orga: 'dreamquark-ai'
         repo: 'ci-security-report'
         pr-nb: ${{ github.event.number }}
-        topic: 'example'
+        topic: 'github-action-example'
