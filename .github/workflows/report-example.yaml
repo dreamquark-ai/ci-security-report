@@ -24,6 +24,6 @@ jobs:
         base-tag: 3.10-rc-slim
         new-tag: 'security-test'
         orga: 'dreamquark-ai'
-        repo: 'github-action-security-report'
+        repo: 'ci-security-report'
         pr-nb: ${{ github.event.number }}
         topic: 'example'

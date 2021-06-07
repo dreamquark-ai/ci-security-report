@@ -1,0 +1,51 @@
+description: Create and publish security report as a PR comment
+parameters:
+    image:
+        description: Image name on which one wants to perform security test
+        type: string
+    base-tag:
+        description: Tag of the image used as reference
+        type: string
+        default: latest
+    new-tag:
+        description: |
+            Tag of the new image on which one wants to seek out for new and removed vulnerabilities
+        type: string
+        default: security-test
+    orga:
+        description: Name of the Github organization
+        type: string
+        default: 'dreamquark-ai'
+    repo:
+        description: Name of the Github repository on which pull request is made
+        type: string
+    pr-nb:
+        description: Pull request number on which changed have been made
+        type: string
+        default: ${CIRCLE_PULL_REQUEST##*/}
+    topic:
+        description: A key word helping to identify a specific report
+        type: string
+        default: image
+    trivy-timeout:
+        description: Set the time '<n>m' until when Trivy scan has to stop
+        type: string
+        default: 20m
+steps:
+    - run:
+        working_directory: /home/scripts
+        name: "Run Trivy security report on the base image"
+        command: >
+            trivy -q -f json -o reports/report-base.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.base-tag >>
+    - run:
+        working_directory: /home/scripts
+        name: "Run Trivy security report on the new image"
+        command: >
+            trivy -q -f json -o reports/report-new.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.new-tag >>
+    - run:
+        working_directory: /home/scripts
+        name: "Compare the report and publish the differential comment as a PR comment"
+        command: >
+            ./main.sh --image << parameters.image >> --base-tag << parameters.base-tag >> 
+            --new-tag << parameters.new-tag >> --pull-request << parameters.pr-nb >> --topic << parameters.topic >> 
+            --repo << parameters.repo >> --orga << parameters.orga >>
