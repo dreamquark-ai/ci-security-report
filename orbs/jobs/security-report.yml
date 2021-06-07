@@ -1,0 +1,52 @@
+description: |
+  Create a markdown security report with new and removed vulnerabilities and add it as a comment pull request
+
+parameters:
+    image:
+        description: Image name on which one wants to perform security test
+        type: string
+    base-tag:
+        description: Tag of the image used as reference
+        type: string
+        default: latest
+    new-tag:
+        description: |
+            Tag of the new image on which one wants to seek out for new and removed vulnerabilities
+        type: string
+        default: security-test
+    orga:
+        description: Name of the Github organization
+        type: string
+        default: 'dreamquark-ai'
+    repo:
+        description: Name of the Github repository on which pull request is made
+        type: string
+    pr-nb:
+        description: Pull request number on which changed have been made
+        type: string
+        default: ${CIRCLE_PULL_REQUEST##*/}
+    topic:
+        description: A key word helping to identify a specific report
+        type: string
+        default: image
+    resource_class:
+        description: CircleCI resource class
+        type: string
+        default: large
+
+executor: default
+resource_class: << parameters.resource_class >>
+steps:
+  - run:
+      name: Get the engine-cpu reference image
+      command: |
+        echo $QUAY_PULL_TOKEN | docker login quay.io -u $QUAY_PULL_LOGIN --password-stdin
+        docker pull << parameters.image >>:<< parameters.base-tag >>
+  - security-report:
+      image: << parameters.image >>
+      base-tag: << parameters.base-tag >>
+      new-tag: << parameters.new-tag >>
+      orga: << parameters.orga >>
+      repo: << parameters.repo >>
+      pr-nb: << parameters.pr-nb >>
+      topic: << parameters.topic >>

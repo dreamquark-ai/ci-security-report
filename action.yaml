@@ -1,4 +1,4 @@
-name: 'Security report'
+name: 'CI Security Report'
 description: 'Compare security reports between PR and develop'
 inputs:
   image:
@@ -26,13 +26,17 @@ inputs:
     description: 'The title of the report: used to identify the security report'
     default: 'image'
     required: true
+  trivy-timeout:
+    description: Set the time '<n>m' until when Trivy scan has to stop
+    default: 20m
+
 runs:
   using: 'composite'
   steps:
     - name: "Install trivy and set up folders"
       shell: bash
       run: |
-        mkdir -p ${{ github.action_path }}/reports
+        mkdir -p ${{ github.action_path }}/scripts/reports
         sudo apt-get install wget apt-transport-https gnupg lsb-release
         wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
         echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
@@ -41,17 +45,21 @@ runs:
 
     - name: "Security report on base image"
       shell: bash
-      working-directory: ${{ github.action_path }}/reports
-      run: trivy -q -f json -o report-base.json ${{inputs.image}}:${{inputs.base-tag}}
+      working-directory: ${{ github.action_path }}/scripts/reports
+      run: >
+        trivy -q -f json -o report-base.json --timeout ${{inputs.trivy-timeout}}
+        ${{inputs.image}}:${{inputs.base-tag}}
 
     - name: "Security report on the new image"
       shell: bash
-      working-directory: ${{ github.action_path }}/reports
-      run: trivy -q -f json -o report-new.json ${{inputs.image}}:${{inputs.new-tag}} 
+      working-directory: ${{ github.action_path }}/scripts/reports
+      run: >
+        trivy -q -f json -o report-new.json --timeout ${{inputs.trivy-timeout}}
+        ${{inputs.image}}:${{inputs.new-tag}}
     
     - name: "Compare the reports"
       shell: bash
-      working-directory: ${{ github.action_path }}
+      working-directory: ${{ github.action_path }}/scripts
       run: >
         ./main.sh --image ${{inputs.image}} --base-tag ${{inputs.base-tag}} --new-tag ${{inputs.new-tag}}
         --pull-request ${{inputs.pr-nb}} --topic ${{inputs.topic}} --repo ${{inputs.repo}} --orga ${{inputs.orga}}

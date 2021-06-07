@@ -13,10 +13,10 @@ function comment_exists() {
     resp=$(curl -s -H "Authorization: token $GITHUB_PAT" \
     https://api.github.com/repos/$orga/$repo/issues/$pr/comments)
     #Check resp is an empty array
-    if [ ${#resp[@]} -eq 0 ]; then
+    if [ $(echo $resp | jq length) == 0 ]; then
         echo ""
     else
-        echo $resp | jq  '.[] | select(.body | test(".*- (.*?)'"$topic"'\\s+")) | .id'
+        echo "$resp" | jq  '.[] | select(.body | test(".*- (.*?)'"$topic"'\\s+")) | .id'
     fi
 }
 
@@ -24,13 +24,12 @@ function comment_exists() {
 function add_comment() {
     repo=$1
     pr=$2
-    body=$3
-    orga=$4
-    
+    orga=$3
+
     resp=$(curl --silent -H "Authorization: token ${GITHUB_PAT}"  \
     -X POST -d @body \
     https://api.github.com/repos/$orga/$repo/issues/$pr/comments)
-
+    echo "https://api.github.com/repos/$orga/$repo/issues/$pr/comments"
 }
 
 #https://docs.github.com/en/rest/reference/issues#delete-an-issue-comment
@@ -54,16 +53,14 @@ function comment_pr() {
     temp_folder
     # Check if comment already exists
     id_found=$(comment_exists $repo $pr $topic $orga)
-    echo $id_found
+
     if [[ ! -z "$id_found" ]]
     then
         echo "Security report already exists: remove the previous one."
         delete_comment $repo $id_found $orga
     fi
-
     # Add new comment
     echo "{\"body\":  \"$(cat ../reports/security.md |  sed "s/\"/'/g" | sed 's/$/\\n/')\"}" > body
-    add_comment $repo $pr $body $orga
+    add_comment $repo $pr $orga
     cleanup_folder
 }
-
