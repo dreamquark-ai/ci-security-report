@@ -1,0 +1,5 @@
+description: >
+  Environment with Trivy and the scripts 
+docker:
+  - image: 'quay.io/dreamquark/security-report:latest'
+
