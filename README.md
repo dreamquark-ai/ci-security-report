@@ -1,6 +1,6 @@
 # Dreamquark security report action
 
-This action is meant for generating differntial secirity reports based on [trivy](https://github.com/aquasecurity/trivy) to be published as a comment of a pull request. 
+This action is meant for generating diffrential security reports based on [trivy](https://github.com/aquasecurity/trivy) to be published as a comment of a pull request. 
 
 From a base image used as reference, it underlies the new security failures and the one that have been removed after changes in your source code. 
 
