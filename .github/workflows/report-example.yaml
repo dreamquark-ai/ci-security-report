@@ -18,12 +18,12 @@ jobs:
     - name: "Security reports"
       uses: dreamquark-ai/github-action-security-report@main
       env:
-        GITHUB_PAT: ${{secrets.SECURITY_REPORT_ACTION_EXAMPLE_PAT}}
+        GITHUB_PAT: ${{secrets.PAT_SECURITY_REPORT_ACTION_EXAMPLE}}
       with:
         image: 'python'
         base-tag: 3.10-rc-slim
         new-tag: 'security-test'
-        orga: 'dreamquark-ai'
+        orga: 'PaulBarrie'
         repo: 'ci-security-report'
         pr-nb: ${{ github.event.number }}
         topic: 'example'
