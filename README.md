@@ -4,6 +4,7 @@ This action is meant for generating differential security reports based on [Triv
 
 From a base image used as reference, it underlies the new security vulnerabilities and the one that have been removed after changes in your source code. 
 
+Any question? Any will to contribute? Join us on [slack](https://join.slack.com/t/ci-security-report/shared_invite/zt-srjmw0ya-wErGpzx~Ogj2A3SoEU9WIg) ! 
 
 ## Example of use
 

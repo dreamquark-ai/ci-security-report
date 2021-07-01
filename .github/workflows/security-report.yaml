@@ -38,8 +38,7 @@ jobs:
       run: |
         unameOut="${{ steps.extract_branch.outputs.branch }}"
         case "${unameOut}" in
-            main)     tag=stable;;
-            develop)  tag=latest;;
+            main)     tag=latest;;
             v*)       tag=${unameOut};;
         esac
         make -C docker-image deploy-security-report DOCKER_TAG=${tag}

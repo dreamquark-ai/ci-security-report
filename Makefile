@@ -8,7 +8,7 @@ ORG_NAME=dreamquark-ai
 ORB_NAME=ci-security-report
 ORB_FILE=./orbs/orb.yml
 ORB_DIR=./orbs
-VERSION=1.0.0
+VERSION=dev:1.0.0
 
 pack-orb:
 	circleci orb pack $(ORB_DIR) > $(ORB_FILE)

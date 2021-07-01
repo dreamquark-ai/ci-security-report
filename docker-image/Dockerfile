@@ -8,6 +8,7 @@ RUN apk update &&\
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin $TRIVY_RELEASE &&\
     git clone https://github.com/dreamquark-ai/github-action-security-report /tmp/security-report &&\
     mv /tmp/security-report/scripts /home &&\
-    rm -rf /tmp/security-report/scripts
+    rm -rf /tmp/security-report/scripts &&\
+    mkdir  /home/scripts/reports
 
 
