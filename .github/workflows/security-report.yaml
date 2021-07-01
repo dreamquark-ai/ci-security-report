@@ -42,4 +42,4 @@ jobs:
             develop)  tag=latest;;
             v*)       tag=${unameOut};;
         esac
-        make -C docker-image DOCKER_TAG=${tag}
+        make -C docker-image deploy-security-report DOCKER_TAG=${tag}
