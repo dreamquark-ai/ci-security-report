@@ -36,12 +36,12 @@ steps:
         working_directory: /home/scripts
         name: "Run Trivy security report on the base image"
         command: >
-            trivy -q -f json -o reports/report-base.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.base-tag >>
+            trivy image --no-progress -f json -o reports/report-base.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.base-tag >>
     - run:
         working_directory: /home/scripts
         name: "Run Trivy security report on the new image"
         command: >
-            trivy -q -f json -o reports/report-new.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.new-tag >>
+            trivy image --no-progress -f json -o reports/report-new.json --timeout << parameters.trivy-timeout >> << parameters.image >>:<< parameters.new-tag >>
     - run:
         working_directory: /home/scripts
         name: "Compare the report and publish the differential comment as a PR comment"

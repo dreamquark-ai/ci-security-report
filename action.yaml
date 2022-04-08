@@ -47,14 +47,14 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}/scripts/reports
       run: >
-        trivy -q -f json -o report-base.json --timeout ${{inputs.trivy-timeout}}
+        trivy image --no-progress -f json -o report-base.json --timeout ${{inputs.trivy-timeout}}
         ${{inputs.image}}:${{inputs.base-tag}}
 
     - name: "Security report on the new image"
       shell: bash
       working-directory: ${{ github.action_path }}/scripts/reports
       run: >
-        trivy -q -f json -o report-new.json --timeout ${{inputs.trivy-timeout}}
+        trivy image --no-progress -f json -o report-new.json --timeout ${{inputs.trivy-timeout}}
         ${{inputs.image}}:${{inputs.new-tag}}
     
     - name: "Compare the reports"
