@@ -13,8 +13,8 @@ function get_differences() {
     mkdir -p $target_folder
     temp_folder
 
-    cat $base_report | jq -r '.[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-base
-    cat $new_report | jq -r '.[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-new
+    cat $base_report | jq -r '.Results[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-base
+    cat $new_report | jq -r '.Results[].Vulnerabilities[]? | [.VulnerabilityID?, .PkgName?, .InstalledVersion?] | join(",")' | sort > tmp-new
 
     # Get added and removed the vulnerabilities
     echo "Get the added and removed vulnerabilities"
