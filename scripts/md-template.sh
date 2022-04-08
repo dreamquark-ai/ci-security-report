@@ -29,13 +29,13 @@ function generate_markdown() {
     if [ $new -ne 0 ]; then
         printf "## New security failures \n\n" >> security.md
         printf "\n|  Vulnerability  | Package | Package Version | Severity |\n |---    |:-:    |:-:    |:-:  |\n" >> security.md
-        cat "$report_folder/new.json" | jq -r '.[] | [.VulnerabilityID, .PkgName, .InstalledVersion, .Severity] | join(" | ")' | sed -E  "s/([^ ]*)(.*)/[\1](https:\/\/nvd.nist.gov\/vuln\/detail\/\1)\2/" | sed 's/$/ |a /'  >> security.md
+        cat "$report_folder/new.json" | jq -r '.Results[] | [.VulnerabilityID, .PkgName, .InstalledVersion, .Severity] | join(" | ")' | sed -E  "s/([^ ]*)(.*)/[\1](https:\/\/nvd.nist.gov\/vuln\/detail\/\1)\2/" | sed 's/$/ |a /'  >> security.md
     fi
     
     if [ $old -ne 0 ]; then
         printf "\n ## Removed security failures \n\n" >> security.md
         printf "\n|   Vulnerability  |   Package |   Package Version |   Severity |\n |---    |:-:    |:-:    |:-: |\n" >> security.md
-        cat "${report_folder}/old.json" | jq -r '.[] | [.VulnerabilityID, .PkgName, .InstalledVersion, .Severity] | join(" | ")' | sed -E  "s/([^ ]*)(.*)/[\1](https:\/\/nvd.nist.gov\/vuln\/detail\/\1)\2/" | sed 's/$/ |a /'  >> security.md
+        cat "${report_folder}/old.json" | jq -r '.Results[] | [.VulnerabilityID, .PkgName, .InstalledVersion, .Severity] | join(" | ")' | sed -E  "s/([^ ]*)(.*)/[\1](https:\/\/nvd.nist.gov\/vuln\/detail\/\1)\2/" | sed 's/$/ |a /'  >> security.md
     fi
     
     
